@@ -1,0 +1,14 @@
+html, body, main {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+#map {
+    height: 60%;
+    width: 60%;
+    margin-top: 50px;
+}
+#tabFooter{
+    width: 100%;
+    background-color: rgba(0,224,97,1);
+}
