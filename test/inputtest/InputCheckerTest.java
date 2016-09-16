@@ -5,6 +5,9 @@
  */
 package inputtest;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import model.Pizza;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -77,14 +80,27 @@ public class InputCheckerTest {
         assertTrue(InputChecker.checkPrezzo("6.001"));
     }
     
+    /*
     @Test
     public void testGetElencoPizzeToHashMap() {
-        assertFalse(InputChecker.checkPrezzo("10.50"));
-        assertFalse(InputChecker.checkPrezzo("6.00"));
-        assertTrue(InputChecker.checkPrezzo("10,50"));
-        assertTrue(InputChecker.checkPrezzo("5,00"));
-        assertTrue(InputChecker.checkPrezzo("10.500"));
-        assertTrue(InputChecker.checkPrezzo("6.001"));
+        Pizza margherita = new Pizza(0, "margherita", "blabla", 6.0, true);
+        Pizza diavola = new Pizza(1, "diavola", "blabla", 6.0, true);
+        Pizza bismark = new Pizza(2, "bismark", "blabla", 6.0, true);
+        
+        ArrayList<Pizza> elencoPizze = new ArrayList<>();
+        elencoPizze.add(margherita);
+        elencoPizze.add(diavola);
+        elencoPizze.add(bismark);
+        elencoPizze.add(margherita);
+        elencoPizze.add(diavola);
+        elencoPizze.add(margherita);
+        
+        HashMap<Pizza, Integer> map = new HashMap<>();
+        map.put(bismark, 1);
+        map.put(diavola, 2);
+        map.put(margherita, 3);
+        
+        assertEquals(map, InputChecker.getElencoPizzeToHashMap(elencoPizze));
     }
-
+    */
 }

@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
 public class Carrello {
@@ -66,6 +67,29 @@ public class Carrello {
         }
         output += "<p>TOTALE " + String.format(Locale.US, "%1$.2f", this.getPrezzoTotale()) + " €</p>";
         return output;
+    }
+    
+    public HashMap<Integer, Integer> getElencoPizzeToHashMap(){ // <idPizza , quantita>
+        HashMap<Integer,Integer> map = new HashMap<>();
+        for(Pizza pizza : this.elencoPizze){
+            int idPizza = pizza.getIdPizza();
+            Integer value = map.get(idPizza);
+            if(value == null){
+                map.put(idPizza, 1);
+            }else{
+                map.put(idPizza, value+1);
+            }
+        }
+        return map;
+    }
+    
+    public Pizza getPizzaByIdPizza(int idPizza){
+        for(Pizza pizza : this.elencoPizze){
+            if(pizza.getIdPizza() == idPizza){
+                return pizza;
+            }
+        }
+        return null;
     }
 
 }

@@ -53,25 +53,8 @@ public class InputChecker {
         return !matcher.find();
     }
 
+
     /*
-    
-    private static  String prezzoToPrint(String prezzo){
-        String output="";
-        
-        int cont = 0;
-        int dotIndex = prezzo.indexOf(".");
-        for(int i = dotIndex+1; i<prezzo.length() && dotIndex!=-1; i++){
-            cont++;
-        }
-        if(dotIndex!=-1){
-            output = cont==1 ? prezzo+"0 €": prezzo+" €";
-        }else{
-            output = prezzo;
-        }
-        return output;
-    }
-    */
-    
     public static HashMap<Pizza, Integer> getElencoPizzeToHashMap(ArrayList<Pizza> elencoPizze){
         HashMap<Pizza,Integer> map = new HashMap<>();
         for(Pizza pizza:elencoPizze){
@@ -84,6 +67,7 @@ public class InputChecker {
         }
         return map;
     }
+    */
     
     
 }

@@ -3,7 +3,9 @@ package servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map.Entry;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -40,12 +42,25 @@ public class DesktopServlet extends HttpServlet {
 
                 PrintWriter out = response.getWriter();
                 String html = "";
+                HashMap<Integer,Integer> map = carrello.getElencoPizzeToHashMap();
+                for(Entry<Integer, Integer> entry : map.entrySet()) {
+                    Integer id = entry.getKey();
+                    Pizza item = carrello.getPizzaByIdPizza(id);
+                    Integer qty = entry.getValue();
+                    html += "<p><button id='rcorners2' "
+                            + "onclick='RichiestaRemove(" + item.getIdPizza() + ", " + carrello.getPrezzoTotale() + ", " + item.getPrezzoPizza() + ")'>X</button>"
+                            + item.getNomePizza() + "     " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza())+" € (x "+qty+")" 
+                            + "<p class='pNascosto'>" + item.getNomePizza() + "      " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza()) + " € [X "+qty+"]</p></p>";
+                }
+                /*
+                String html = "";
                 for (Pizza item : carrello.getElencoPizze()) {
                     html += "<p><button id='rcorners2' "
                             + "onclick='RichiestaRemove(" + item.getIdPizza() + ", " + carrello.getPrezzoTotale() + ", " + item.getPrezzoPizza() + ")'>X</button>"
                             + item.getNomePizza() + "     " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza())+" €" 
                             + "<p class='pNascosto'>" + item.getNomePizza() + "      " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza()) + " €</p></p>";
                 }
+                */
                 html += "<p>TOTALE " + String.format(Locale.US, "%1$.2f", carrello.getPrezzoTotale()) + " €</p>";
                 out.print(html);
                 out.flush();
