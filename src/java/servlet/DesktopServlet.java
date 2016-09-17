@@ -31,6 +31,7 @@ public class DesktopServlet extends HttpServlet {
         /*Aggiungere una nuova pizza al carrello*/
         if (cmd.equals("addCarrello")) {
 
+            System.out.println("[DESKTOP_SERVLET] addCarrello");
             Utente utente = (Utente) session.getAttribute("utente");
             controlloUtente(utente, "all", response, request);
             if (session.getAttribute("carrello") != null) {
@@ -42,26 +43,20 @@ public class DesktopServlet extends HttpServlet {
 
                 PrintWriter out = response.getWriter();
                 String html = "";
-                HashMap<Integer,Integer> map = carrello.getElencoPizzeToHashMap();
-                for(Entry<Integer, Integer> entry : map.entrySet()) {
+                ArrayList<Pizza> elencoPizze = carrello.getElencoPizze();
+                HashMap<Integer, Integer> map = ArrayListPizzaDisplayer.getElencoPizzeToHashMap(elencoPizze);
+                for (Entry<Integer, Integer> entry : map.entrySet()) {
                     Integer id = entry.getKey();
-                    Pizza item = carrello.getPizzaByIdPizza(id);
+                    Pizza item = ArrayListPizzaDisplayer.getPizzaByIdPizza(elencoPizze, id);
                     Integer qty = entry.getValue();
                     html += "<p><button id='rcorners2' "
                             + "onclick='RichiestaRemove(" + item.getIdPizza() + ", " + carrello.getPrezzoTotale() + ", " + item.getPrezzoPizza() + ")'>X</button>"
-                            + item.getNomePizza() + "     " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza())+" € (x "+qty+")" 
-                            + "<p class='pNascosto'>" + item.getNomePizza() + "      " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza()) + " € (X "+qty+")</p></p>";
+                            + item.getNomePizza() + "     " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza()) + " € (x " + qty + ")"
+                            + "<p class='pNascosto'>" + item.getNomePizza() + "      " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza()) + " € (x " + qty + ")</p></p>";
                 }
-                /*
-                String html = "";
-                for (Pizza item : carrello.getElencoPizze()) {
-                    html += "<p><button id='rcorners2' "
-                            + "onclick='RichiestaRemove(" + item.getIdPizza() + ", " + carrello.getPrezzoTotale() + ", " + item.getPrezzoPizza() + ")'>X</button>"
-                            + item.getNomePizza() + "     " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza())+" €" 
-                            + "<p class='pNascosto'>" + item.getNomePizza() + "      " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza()) + " €</p></p>";
-                }
-                */
-                html += "<p>TOTALE " + String.format(Locale.US, "%1$.2f", carrello.getPrezzoTotale()) + " €</p>";
+                int n = elencoPizze.size();
+                String size = (n==1 ? "1 pizza" : n+" pizze");
+                html += "<p>TOTALE " + String.format(Locale.US, "%1$.2f", carrello.getPrezzoTotale()) + " €  (" + size + ")</p>";
                 out.print(html);
                 out.flush();
                 out.close();
@@ -70,6 +65,7 @@ public class DesktopServlet extends HttpServlet {
             /*Rimuovere pizza dal carrello*/
         } else if (cmd.equals("removeCarrello")) {
 
+            System.out.println("[DESKTOP_SERVLET] removeCarrello");
             Utente utente = (Utente) session.getAttribute("utente");
             controlloUtente(utente, "all", response, request);
             Carrello carrello = (Carrello) session.getAttribute("carrello");
@@ -82,16 +78,24 @@ public class DesktopServlet extends HttpServlet {
                 PrintWriter out = response.getWriter();
                 String html = "";
                 System.out.println("[removeCarrello(clear=false)] PrezzoTotaleCarrello: " + carrello.getPrezzoTotale());
-                for (Pizza item : carrello.getElencoPizze()) {
+                ArrayList<Pizza> elencoPizze = carrello.getElencoPizze();
+                HashMap<Integer, Integer> map = ArrayListPizzaDisplayer.getElencoPizzeToHashMap(elencoPizze);
+                for (Entry<Integer, Integer> entry : map.entrySet()) {
+                    Integer id = entry.getKey();
+                    Pizza item = ArrayListPizzaDisplayer.getPizzaByIdPizza(elencoPizze, id);
+                    Integer qty = entry.getValue();
                     html += "<p><button id='rcorners2' "
                             + "onclick='RichiestaRemove(" + item.getIdPizza() + ", " + carrello.getPrezzoTotale() + ", " + item.getPrezzoPizza() + ")'>X</button>"
-                            + item.getNomePizza() + "      " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza()) + " €<p class='pNascosto'>" + item.getNomePizza() + "      " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza()) + " €</p></p>";
+                            + item.getNomePizza() + "      " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza()) + " € (x " + qty + ")"
+                            + "<p class='pNascosto'>" + item.getNomePizza() + "      " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza()) + " € (x " + qty + ")</p></p>";
                 }
 
                 if (carrello.getPrezzoTotale() == 0.0) {
                     html += "";
                 } else {
-                    html += "<p>TOTALE " + String.format(Locale.US, "%1$.2f", carrello.getPrezzoTotale()) + " €</p>";
+                    int n = elencoPizze.size();
+                    String size = (n==1 ? "1 pizza" : n+" pizze");
+                    html += "<p>TOTALE " + String.format(Locale.US, "%1$.2f", carrello.getPrezzoTotale()) + " €  (" + size + ")</p>";
                 }
                 out.print(html);
                 out.flush();
@@ -102,9 +106,9 @@ public class DesktopServlet extends HttpServlet {
         } else if (cmd.equals("login")) {
 
             String username = request.getParameter("txtUsername");
-            goToErrorPage( InputChecker.checkGenericText(username) , response,request);
+            goToErrorPage(InputChecker.checkGenericText(username), response, request);
             String password = request.getParameter("txtPassword");
-            goToErrorPage( InputChecker.checkGenericText(password) , response,request);
+            goToErrorPage(InputChecker.checkGenericText(password), response, request);
             Utente utente = DBManager.login(username, password);
             if (!(utente.getRuolo().equals(""))) {
                 session.setAttribute("utente", utente);
@@ -163,12 +167,11 @@ public class DesktopServlet extends HttpServlet {
             Utente utente = (Utente) session.getAttribute("utente");
             controlloUtente(utente, "A", response, request);
             String nomePizza = request.getParameter("txtNomePizza");
-            goToErrorPage( InputChecker.checkGenericText(nomePizza) , response,request);
+            goToErrorPage(InputChecker.checkGenericText(nomePizza), response, request);
             String ingredienti = request.getParameter("txtIngredienti");
-            goToErrorPage( InputChecker.checkGenericText(ingredienti) , response,request);
+            goToErrorPage(InputChecker.checkGenericText(ingredienti), response, request);
             String prezzoString = request.getParameter("txtPrezzoPizza");
-            //System.out.println("****** ADD |" + prezzoString);
-            goToErrorPage( InputChecker.checkPrezzo(prezzoString+"") , response,request);
+            goToErrorPage(InputChecker.checkPrezzo(prezzoString + ""), response, request);
             double prezzoPizza = Double.parseDouble(prezzoString);
             String disponibile = request.getParameter("optDisponibile");
             DBManager.inserisciNuovaPizza(nomePizza, ingredienti, prezzoPizza, disponibile);
@@ -183,13 +186,13 @@ public class DesktopServlet extends HttpServlet {
             Utente utente = (Utente) session.getAttribute("utente");
             controlloUtente(utente, "A", response, request);
             int idPizzaEdit = Integer.parseInt(request.getParameter("idPizza"));
-                           
+
             String nomePizza = request.getParameter("txtNomePizza");
-            goToErrorPage( InputChecker.checkGenericText(nomePizza) , response,request);
+            goToErrorPage(InputChecker.checkGenericText(nomePizza), response, request);
             String ingredienti = request.getParameter("txtIngredienti");
-            goToErrorPage( InputChecker.checkGenericText(ingredienti) , response,request);
+            goToErrorPage(InputChecker.checkGenericText(ingredienti), response, request);
             String prezzoPizzaString = request.getParameter("txtPrezzoPizza");
-            goToErrorPage( InputChecker.checkPrezzo(prezzoPizzaString) , response,request);
+            goToErrorPage(InputChecker.checkPrezzo(prezzoPizzaString), response, request);
             double prezzoPizza = Double.parseDouble(prezzoPizzaString);
             String disponibile = request.getParameter("optDisponibile");
             DBManager.modificaPizza(idPizzaEdit, nomePizza, ingredienti, prezzoPizza, disponibile);
@@ -238,11 +241,11 @@ public class DesktopServlet extends HttpServlet {
             Ordine o = new Ordine();
             Carrello carrello = (Carrello) session.getAttribute("carrello");
             String indirizzo = request.getParameter("txtIndirizzo");
-            goToErrorPage( InputChecker.checkGenericText(indirizzo) , response,request);
+            goToErrorPage(InputChecker.checkGenericText(indirizzo), response, request);
             String data = request.getParameter("txtData");
-            goToErrorPage( InputChecker.checkData(data) , response,request);
+            goToErrorPage(InputChecker.checkData(data), response, request);
             String time = request.getParameter("txtOrario");
-            goToErrorPage( InputChecker.checkOra(time) , response,request);
+            goToErrorPage(InputChecker.checkOra(time), response, request);
 
             //YYYY-MM-DD HH:MM:SS (SS-> default 00)
             String datatime = data + " " + time + ":00";
@@ -296,7 +299,7 @@ public class DesktopServlet extends HttpServlet {
             controlloUtente(utente, "all", response, request);
             int idOrdine = Integer.parseInt(request.getParameter("idOrdine"));
             int rating = Integer.parseInt(request.getParameter("rating"));
-            System.out.println("rate["+rating+"]");
+            System.out.println("rate[" + rating + "]");
             DBManager.inserisciValutazione(idOrdine, rating);
             ArrayList<Ordine> elencoOrdini = DBManager.getOrdiniUtente(utente);
             session.setAttribute("elenco_ordini", elencoOrdini);
@@ -310,8 +313,12 @@ public class DesktopServlet extends HttpServlet {
             String html = "";
             html += "<button class='floatRight' id='chiudiInfoOrdine' onclick='allMostra()'>X</button>";
             html += "<h2>Ordine selezionato: </h2>";
-            for (PizzaPrenotata item : elencoPizze) {
-                html += "<p> - " + item.getNomePizzaPrenotata() + "                                       " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizzaPrenotata()) + " €</p>";
+            HashMap<String,Integer> map = ArrayListPizzaPrenotataDisplayer.getElencoPizzaPrenotataToHashMap(elencoPizze);
+            for(Entry<String, Integer> entry : map.entrySet()) {
+                String nome = entry.getKey();
+                PizzaPrenotata item = ArrayListPizzaPrenotataDisplayer.getPizzaByNomePizza(elencoPizze, nome);
+                Integer qty = entry.getValue();
+                html += "<p> - " + item.getNomePizzaPrenotata() + "                                       " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizzaPrenotata()) + " €  (x "+ qty +")</p>";
             }
             out.print(html);
             out.flush();
@@ -338,9 +345,9 @@ public class DesktopServlet extends HttpServlet {
             session.setAttribute("elenco_ordini_admin", elencoOrdiniAdmin);
             rd = request.getRequestDispatcher("gestioneOrdiniAdmin.jsp");
             rd.forward(request, response);
-            
+
         } else if (cmd.equals("visualizzaProfilo")) {
-            
+
             Utente utente = (Utente) session.getAttribute("utente");
             controlloUtente(utente, "all", response, request);
             int nOrdini = DBManager.contaOrdiniUtente(utente.getIdUtente());
@@ -368,10 +375,10 @@ public class DesktopServlet extends HttpServlet {
         }
         return elenco;
     }
-    */
-    private ArrayList<Pizza> editInElencoAdmin(ArrayList<Pizza> elencoAdmin, Pizza pizzaNew){
-        for(int i = 0; i<elencoAdmin.size(); i++){
-            if(elencoAdmin.get(i).getIdPizza() == pizzaNew.getIdPizza()){
+     */
+    private ArrayList<Pizza> editInElencoAdmin(ArrayList<Pizza> elencoAdmin, Pizza pizzaNew) {
+        for (int i = 0; i < elencoAdmin.size(); i++) {
+            if (elencoAdmin.get(i).getIdPizza() == pizzaNew.getIdPizza()) {
                 elencoAdmin.remove(i);
                 elencoAdmin.add(i, pizzaNew);
                 return elencoAdmin;
@@ -379,26 +386,26 @@ public class DesktopServlet extends HttpServlet {
         }
         return null;
     }
-    
-    private ArrayList<Pizza> editInElencoUser(ArrayList<Pizza> elencoUser, Pizza pizzaNew){
-        for(int i = 0; i<elencoUser.size(); i++){
-            if(elencoUser.get(i).getIdPizza() == pizzaNew.getIdPizza()){
+
+    private ArrayList<Pizza> editInElencoUser(ArrayList<Pizza> elencoUser, Pizza pizzaNew) {
+        for (int i = 0; i < elencoUser.size(); i++) {
+            if (elencoUser.get(i).getIdPizza() == pizzaNew.getIdPizza()) {
                 elencoUser.remove(i);
-                if(pizzaNew.isDisponibile()){
+                if (pizzaNew.isDisponibile()) {
                     elencoUser.add(i, pizzaNew);
                 }
                 return elencoUser;
             }
         }
-        if(pizzaNew.isDisponibile()){
+        if (pizzaNew.isDisponibile()) {
             elencoUser.add(pizzaNew);
         }
         return elencoUser;
     }
-    
-    private ArrayList<Pizza> removeById(ArrayList<Pizza> elenco, int idPizzaRmv){
-        for(Pizza pizza : elenco){
-            if(pizza.getIdPizza() == idPizzaRmv){
+
+    private ArrayList<Pizza> removeById(ArrayList<Pizza> elenco, int idPizzaRmv) {
+        for (Pizza pizza : elenco) {
+            if (pizza.getIdPizza() == idPizzaRmv) {
                 elenco.remove(pizza);
                 return elenco;
             }
