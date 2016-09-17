@@ -56,6 +56,9 @@ function RichiestaAcquista(username, indirizzo) {
 
     var hh = data.getHours();
     hh = (hh+1)%24;//setto un'ora in piu di quella corrente perche l'annullamento è entro un ora dalla consegna
+    if (hh <= 9) {
+        hh = "0" + hh;
+    }
     var min = data.getMinutes();
     min = (min+1)%60;
     if (min <= 9) {

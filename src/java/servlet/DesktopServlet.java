@@ -50,7 +50,7 @@ public class DesktopServlet extends HttpServlet {
                     html += "<p><button id='rcorners2' "
                             + "onclick='RichiestaRemove(" + item.getIdPizza() + ", " + carrello.getPrezzoTotale() + ", " + item.getPrezzoPizza() + ")'>X</button>"
                             + item.getNomePizza() + "     " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza())+" € (x "+qty+")" 
-                            + "<p class='pNascosto'>" + item.getNomePizza() + "      " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza()) + " € [X "+qty+"]</p></p>";
+                            + "<p class='pNascosto'>" + item.getNomePizza() + "      " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza()) + " € (X "+qty+")</p></p>";
                 }
                 /*
                 String html = "";
@@ -182,30 +182,22 @@ public class DesktopServlet extends HttpServlet {
 
             Utente utente = (Utente) session.getAttribute("utente");
             controlloUtente(utente, "A", response, request);
-            int idPizzaRimosso = Integer.parseInt(request.getParameter("idPizza"));
-            Pizza p = DBManager.getPizzaById(idPizzaRimosso);
-            DBManager.rimuoviPizza(idPizzaRimosso);
-            ArrayList<Pizza> elencoAdmin = (ArrayList<Pizza>) session.getAttribute("elenco_pizze_admin");
-            ArrayList<Pizza> elencoUser = (ArrayList<Pizza>) session.getAttribute("elenco_pizze_user");
-            rimuoviDaAdmin(elencoAdmin, p);
-            rimuoviDaUser(elencoUser, p);
-            //Rimozione Finita -- Inizio aggiunta pizza
+            int idPizzaEdit = Integer.parseInt(request.getParameter("idPizza"));
+                           
             String nomePizza = request.getParameter("txtNomePizza");
             goToErrorPage( InputChecker.checkGenericText(nomePizza) , response,request);
             String ingredienti = request.getParameter("txtIngredienti");
             goToErrorPage( InputChecker.checkGenericText(ingredienti) , response,request);
             String prezzoPizzaString = request.getParameter("txtPrezzoPizza");
-            //System.out.println("****** EDIT |" + prezzoPizzaString);
             goToErrorPage( InputChecker.checkPrezzo(prezzoPizzaString) , response,request);
             double prezzoPizza = Double.parseDouble(prezzoPizzaString);
             String disponibile = request.getParameter("optDisponibile");
-
-            DBManager.inserisciNuovaPizza(nomePizza, ingredienti, prezzoPizza, disponibile);
-            Pizza pizzaAggiunta = DBManager.getPizzaByAll(nomePizza, ingredienti, prezzoPizza, disponibile);
-            elencoAdmin.add(pizzaAggiunta);
-            if (pizzaAggiunta.isDisponibile()) {
-                elencoUser.add(pizzaAggiunta);
-            }
+            DBManager.modificaPizza(idPizzaEdit, nomePizza, ingredienti, prezzoPizza, disponibile);
+            ArrayList<Pizza> elencoAdmin = (ArrayList<Pizza>) session.getAttribute("elenco_pizze_admin");
+            ArrayList<Pizza> elencoUser = (ArrayList<Pizza>) session.getAttribute("elenco_pizze_user");
+            Pizza pizzaNew = new Pizza(idPizzaEdit, nomePizza, ingredienti, prezzoPizza, disponibile.equals("T"));
+            elencoAdmin = editInElencoAdmin(elencoAdmin, pizzaNew);
+            elencoUser = editInElencoUser(elencoUser, pizzaNew);
             session.setAttribute("elenco_pizze_admin", elencoAdmin);
             session.setAttribute("elenco_pizze_user", elencoUser);
 
@@ -365,26 +357,53 @@ public class DesktopServlet extends HttpServlet {
     /**
      * **** METODI AUSILIARI *****
      */
-    private boolean rimuoviDaUser(ArrayList<Pizza> elencoUser, Pizza p) {
-        for (int i = 0; i < elencoUser.size(); i++) {
-            Pizza temp = (Pizza) elencoUser.get(i);
-            if (p.getIdPizza() == temp.getIdPizza() && p.isDisponibile()) {
-                elencoUser.remove(i);
-                return true;
+    /*
+    private ArrayList<Pizza> editInElenco(ArrayList<Pizza> elenco, Pizza pizzaOld, Pizza pizzaNew){
+        for(int i = 0; i<elenco.size();i++){
+            if(elenco.get(i).getIdPizza() == pizzaOld.getIdPizza()){
+                elenco.remove(i);
+                elenco.add(i, pizzaNew);
+                return elenco;
             }
         }
-        return false;
+        return elenco;
     }
-
-    private boolean rimuoviDaAdmin(ArrayList<Pizza> elencoAdmin, Pizza p) {
-        for (int i = 0; i < elencoAdmin.size(); i++) {
-            Pizza temp = (Pizza) elencoAdmin.get(i);
-            if (p.getIdPizza() == temp.getIdPizza()) {
+    */
+    private ArrayList<Pizza> editInElencoAdmin(ArrayList<Pizza> elencoAdmin, Pizza pizzaNew){
+        for(int i = 0; i<elencoAdmin.size(); i++){
+            if(elencoAdmin.get(i).getIdPizza() == pizzaNew.getIdPizza()){
                 elencoAdmin.remove(i);
-                return true;
+                elencoAdmin.add(i, pizzaNew);
+                return elencoAdmin;
             }
         }
-        return false;
+        return null;
+    }
+    
+    private ArrayList<Pizza> editInElencoUser(ArrayList<Pizza> elencoUser, Pizza pizzaNew){
+        for(int i = 0; i<elencoUser.size(); i++){
+            if(elencoUser.get(i).getIdPizza() == pizzaNew.getIdPizza()){
+                elencoUser.remove(i);
+                if(pizzaNew.isDisponibile()){
+                    elencoUser.add(i, pizzaNew);
+                }
+                return elencoUser;
+            }
+        }
+        if(pizzaNew.isDisponibile()){
+            elencoUser.add(pizzaNew);
+        }
+        return elencoUser;
+    }
+    
+    private ArrayList<Pizza> removeById(ArrayList<Pizza> elenco, int idPizzaRmv){
+        for(Pizza pizza : elenco){
+            if(pizza.getIdPizza() == idPizzaRmv){
+                elenco.remove(pizza);
+                return elenco;
+            }
+        }
+        return elenco;
     }
 
     private void controlloUtente(Utente utente, String utenteRichiesto, HttpServletResponse response, HttpServletRequest request)

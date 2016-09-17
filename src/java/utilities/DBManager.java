@@ -59,6 +59,45 @@ public class DBManager {
         }
     }
 
+    public static boolean modificaPizza(int idPizza, String nomePizzaNew, String ingredientiNew, double prezzoPizzaNew, String disponibileNew){
+        try {
+            creazioneConnessioneDB();
+        } catch (SQLException exc) {
+            System.out.println(exc.getMessage()
+                    + "\n***[DBmanager.modificaPizza: creazioneConnessioneDB fallita]***");
+            return false;
+        }
+
+        System.out.println("Sto per modificare dati in PIZZA");
+
+        try {
+            
+            String action = "UPDATE pizza "
+                    + "SET nomePizza = '"+nomePizzaNew+"', ingredienti = '"+ingredientiNew+"', "
+                    + "prezzoPizza = "+prezzoPizzaNew+", disponibile = '"+disponibileNew+"' "
+                    + "WHERE idPIZZA = "+idPizza+";";
+            System.out.println(action);
+            stm.execute(action);
+            System.out.println("pizza modificata correttamente");
+
+        } catch (SQLException exc) {
+            System.out.println(exc.getMessage()
+                    + "\n***[DBmanager.modificaPizza: executeUpdate fallita]***");
+            return false;
+
+        } finally {
+
+            try {
+                chiusuraConnessioneDB();
+            } catch (SQLException exc) {
+                System.out.println(exc.getMessage()
+                        + "\n***[DBmanager.modificaPizza: chiusuraConnessioneDB fallita]***");
+                return false;
+            }
+        }
+        return true;
+    }
+    
     public static void acquista(Carrello c, Utente u, String indirizzo, String datetime) {
         int idOrdine = inserisciOrdine(c, u, indirizzo, datetime);
         if (idOrdine != Integer.MAX_VALUE) {
