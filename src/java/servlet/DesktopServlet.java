@@ -42,21 +42,7 @@ public class DesktopServlet extends HttpServlet {
                 session.setAttribute("carrello", carrello);
 
                 PrintWriter out = response.getWriter();
-                String html = "";
-                ArrayList<Pizza> elencoPizze = carrello.getElencoPizze();
-                HashMap<Integer, Integer> map = ArrayListPizzaDisplayer.getElencoPizzeToHashMap(elencoPizze);
-                for (Entry<Integer, Integer> entry : map.entrySet()) {
-                    Integer id = entry.getKey();
-                    Pizza item = ArrayListPizzaDisplayer.getPizzaByIdPizza(elencoPizze, id);
-                    Integer qty = entry.getValue();
-                    html += "<p><button id='rcorners2' "
-                            + "onclick='RichiestaRemove(" + item.getIdPizza() + ", " + carrello.getPrezzoTotale() + ", " + item.getPrezzoPizza() + ")'>X</button>"
-                            + item.getNomePizza() + "     " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza()) + " € (x " + qty + ")"
-                            + "<p class='pNascosto'>" + item.getNomePizza() + "      " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza()) + " € (x " + qty + ")</p></p>";
-                }
-                int n = elencoPizze.size();
-                String size = (n==1 ? "1 pizza" : n+" pizze");
-                html += "<p>TOTALE " + String.format(Locale.US, "%1$.2f", carrello.getPrezzoTotale()) + " €  (" + size + ")</p>";
+                String html = carrello.printCarrello();
                 out.print(html);
                 out.flush();
                 out.close();
@@ -76,27 +62,8 @@ public class DesktopServlet extends HttpServlet {
                 carrello.removeCarrello(pizzaCarrello);
                 session.setAttribute("carrello", carrello);
                 PrintWriter out = response.getWriter();
-                String html = "";
+                String html = carrello.printCarrello();
                 System.out.println("[removeCarrello(clear=false)] PrezzoTotaleCarrello: " + carrello.getPrezzoTotale());
-                ArrayList<Pizza> elencoPizze = carrello.getElencoPizze();
-                HashMap<Integer, Integer> map = ArrayListPizzaDisplayer.getElencoPizzeToHashMap(elencoPizze);
-                for (Entry<Integer, Integer> entry : map.entrySet()) {
-                    Integer id = entry.getKey();
-                    Pizza item = ArrayListPizzaDisplayer.getPizzaByIdPizza(elencoPizze, id);
-                    Integer qty = entry.getValue();
-                    html += "<p><button id='rcorners2' "
-                            + "onclick='RichiestaRemove(" + item.getIdPizza() + ", " + carrello.getPrezzoTotale() + ", " + item.getPrezzoPizza() + ")'>X</button>"
-                            + item.getNomePizza() + "      " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza()) + " € (x " + qty + ")"
-                            + "<p class='pNascosto'>" + item.getNomePizza() + "      " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza()) + " € (x " + qty + ")</p></p>";
-                }
-
-                if (carrello.getPrezzoTotale() == 0.0) {
-                    html += "";
-                } else {
-                    int n = elencoPizze.size();
-                    String size = (n==1 ? "1 pizza" : n+" pizze");
-                    html += "<p>TOTALE " + String.format(Locale.US, "%1$.2f", carrello.getPrezzoTotale()) + " €  (" + size + ")</p>";
-                }
                 out.print(html);
                 out.flush();
                 out.close();

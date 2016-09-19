@@ -39,11 +39,11 @@
             <div id="boxAdd">
                 <form method="POST" name="frmAdd" action="Dispatcher?src=desktop&cmd=addMenu" >
                     <div class="testo-box">Nome pizza </div>
-                    <div class="testo-box"><input type="text" name="txtNomePizza" value="" class="inputBox" required/></div><br>
+                    <div class="testo-box"><input id="nomeAdd" type="text" name="txtNomePizza" value="" class="inputBox" required/></div><br>
                     <div class="testo-box">Ingredienti</div>
-                    <div class="testo-box"><input maxlength="100" type="text" id="txtAddIngredienti" name="txtIngredienti" value="" class="inputBox" required/></div><br>
+                    <div class="testo-box"><input id="ingredientiAdd" maxlength="100" type="text" id="txtAddIngredienti" name="txtIngredienti" value="" class="inputBox" required/></div><br>
                     <div class="testo-box">Prezzo pizza</div>
-                    <div class="testo-box"><input type="text" size="4" id="txtPrezzoAdd" name="txtPrezzoPizza" value="" class="inputBox" required placeholder="5.00"/> €</div><br>
+                    <div class="testo-box"><input type="text" size="1" id="txtPrezzoAdd" name="txtPrezzoPizza" value="" class="inputBox" required placeholder="5.00"/> €</div><br>
                     <div class="testo-box">Disponibile </div>
                     <div class="testo-box"><input type="radio" name="optDisponibile" value="T" checked />Si
                         <input type="radio" name="optDisponibile" value="F"/>No</div><br>
@@ -57,11 +57,11 @@
                 <form method="POST" name="frmEdit" action="Dispatcher?src=desktop&cmd=editMenu" >
                     <input type="text" id="idPizza" name="idPizza" class="hide" />
                     <div class="testo-box">Nome pizza</div>
-                    <div class="testo-box"><input type="text" id="nomeEdit" name="txtNomePizza" value="" class="inputBox" required/></div><br>
+                    <div class="testo-box"><input id="nomeEdit" type="text" id="nomeEdit" name="txtNomePizza" value="" class="inputBox" required/></div><br>
                     <div class="testo-box">Ingredienti</div>
-                    <div class="testo-box"><input type="text" id="ingredientiEdit" maxlength="100" name="txtIngredienti" value="" class="inputBox" required/></div><br>
+                    <div class="testo-box"><input id="ingredientiEdit" type="text" id="ingredientiEdit" maxlength="100" name="txtIngredienti" value="" class="inputBox" required/></div><br>
                     <div class="testo-box">Prezzo pizza</div>
-                    <div class="testo-box"><input type="text" id="txtPrezzoEdit" size="4" name="txtPrezzoPizza" value="" class="inputBox" required/> €</div><br>
+                    <div class="testo-box"><input type="text" id="txtPrezzoEdit" size="1" name="txtPrezzoPizza" value="" class="inputBox" required placeholder="5.00"/> €</div><br>
                     <div class="testo-box">Disponibile </div>
                     <div class="testo-box"><input type="radio" id="disponibileEditTrue" name="optDisponibile" value="T" checked />Si
                         <input type="radio" id="disponibileEditFalse" name="optDisponibile" value="F" class="campiOverlay" />No</div><br>

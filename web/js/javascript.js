@@ -102,23 +102,55 @@ function RichiestaAcquista(username, indirizzo) {
 
 
 
-function ControlloFormatoPrezzo(form) {
+function ControlloInput(form) {
     
     console.log(modulo);
     var modulo = document.getElementsByName(""+form)[0];
+    var nome='';
+    var ingredienti='';
     var prezzo='';
     if (form === "frmEdit") {
-        prezzo = document.getElementById("txtPrezzoEdit").value;
+        nome = document.getElementById("nomeEdit");
+        ingredienti = document.getElementById("ingredientiEdit");
+        prezzo = document.getElementById("txtPrezzoEdit");
     } else if (form === "frmAdd") {
-        prezzo = document.getElementById("txtPrezzoAdd").value;
+        nome = document.getElementById("nomeAdd");
+        ingredienti = document.getElementById("ingredientiAdd");
+        prezzo = document.getElementById("txtPrezzoAdd");
     } else {
         alert("C'è qualquadra che non cosa!");
     }
     
-    //var virgola = prezzo.indexOf(",");
-
+    var illegalChar = '#';
+    if(nome.value === "" || nome.value === "undefined"){
+        alert("campo 'Nome' è obbligatorio");
+        nome.focus();
+        return false;
+    }else if((illegalChar = hasIllegalChar(nome.value)) !== null){
+        alert("campo 'Nome' contiente il seguente carattere non permesso:  "+illegalChar);
+        nome.focus();
+        return false;
+    }
+    
+    illegalChar = '#';
+    if(ingredienti.value === "" || ingredienti.value === "undefined"){
+        alert("campo 'Ingredienti' è obbligatorio");
+        ingredienti.focus();
+        return false;
+    }else if((illegalChar = hasIllegalChar(ingredienti.value)) !== null){
+        alert("campo 'Ingredienti' contiente il seguente carattere non permesso:  "+illegalChar);
+        ingredienti.focus();
+        return false;
+    }
+    
+    
+    if(prezzo.value === "" || prezzo.value === "undefined"){
+        alert("campo 'Prezzo' è obbligatorio");
+        prezzo.focus();
+        return false;
+    }
     var regExp = new RegExp("^[0-9]{1,2}\\.[0-9]{2}$", 'g');
-    var matchregex = regExp.test(prezzo);
+    var matchregex = regExp.test(prezzo.value);
      console.log(matchregex);
     if (matchregex == false) {
         console.log("["+prezzo+"]");
@@ -131,7 +163,17 @@ function ControlloFormatoPrezzo(form) {
     }
 }
 
-
+function hasIllegalChar(text){
+    var illegalChar = ["'", "#", ";", ":", "*", "+", "{", "}","(", ")", "]", "[", "§", "!", "?", "/", "%", "£", "$", "%", "&", "="];
+    var char;
+    for(i=0 ; i<text.length ; i++){
+        char = illegalChar[i];
+        if(text.indexOf(char) !== -1){
+            return char;
+        }
+    }
+    return null;
+}
 
 function ControlloOraOrdine() {
     var orarioOrdine = document.getElementById("txtOrario").value;

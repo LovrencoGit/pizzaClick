@@ -7,7 +7,7 @@ $(document).ready(function () {
             });
     $("#btnAddPizza").click(function(){
         console.log("ADD");
-        ControlloFormatoPrezzo('frmAdd');
+        ControlloInput('frmAdd');
     });
     $(".chiudiAdd").click(
             function () {
@@ -31,7 +31,7 @@ $(document).ready(function () {
             });
     $("#btnEditPizza").click(function(){
         console.log("EDIT");
-        ControlloFormatoPrezzo('frmEdit');
+        ControlloInput('frmEdit');
     });
 
     $(".chiudiEdit").click(

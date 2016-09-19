@@ -3,6 +3,8 @@ package model;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map.Entry;
+import utilities.ArrayListPizzaDisplayer;
 
 public class Carrello {
 
@@ -58,15 +60,27 @@ public class Carrello {
     }
 
     public String printCarrello() {
-        String output = "";
-        for (Pizza item : elencoPizze) {
-            output += "<p><button id='rcorners2' "
+        String html = "";
+        HashMap<Integer, Integer> map = ArrayListPizzaDisplayer.getElencoPizzeToHashMap(elencoPizze);
+        for (Entry<Integer, Integer> entry : map.entrySet()) {
+            Integer id = entry.getKey();
+            Pizza item = ArrayListPizzaDisplayer.getPizzaByIdPizza(elencoPizze, id);
+            Integer qty = entry.getValue();
+            html += "<p><button id='rcorners2' "
                     + "onclick='RichiestaRemove(" + item.getIdPizza() + ", " + this.getPrezzoTotale() + ", " + item.getPrezzoPizza() + ")'>X</button>"
-                    + item.getNomePizza() + "     " + String.format("%1$.2f", item.getPrezzoPizza()) + 
-                    "<p class='pNascosto'>" + item.getNomePizza() + "   " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza()) + " €</p></p>";
+                    + item.getNomePizza() + "     " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza()) + " € (x " + qty + ")"
+                    + "<p class='pNascosto'>" + item.getNomePizza() + "      " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza()) + " € (x " + qty + ")</p></p>";
         }
-        output += "<p>TOTALE " + String.format(Locale.US, "%1$.2f", this.getPrezzoTotale()) + " €</p>";
-        return output;
+                
+        if (this.getPrezzoTotale() == 0.0) {
+            html += "";
+        } else {
+            int n = elencoPizze.size();
+            String size = (n==1 ? "1 pizza" : n+" pizze");
+            html += "<p>TOTALE " + String.format(Locale.US, "%1$.2f", this.getPrezzoTotale()) + " €  (" + size + ")</p>";
+        }
+        
+        return html;
     }
     
     
