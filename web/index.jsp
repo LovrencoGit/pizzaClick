@@ -41,7 +41,9 @@
                     </tr>
                     <tr>
                         <td><input class="buttonGenerico apriConfermaCarrello" id="btnAcquista" type="submit" value="Acquista" name="btnAcquista" 
-                                   onclick="RichiestaAcquista('<%=UtenteBean.getUsername()%>', '<%=UtenteBean.getIndirizzo()%>')"/></td>
+                                   onclick="RichiestaAcquista('<%=UtenteBean.getUsername()%>', '<%=UtenteBean.getIndirizzo()%>')"/>
+                            <a id="labelClear" class="pNascosto" href="#" onclick="RichiestaClear();"> svuota carrello </a>
+                        </td>
                     </tr>
                 </table>
             </div>

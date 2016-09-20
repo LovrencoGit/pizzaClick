@@ -5,6 +5,7 @@ function RichiestaAdd(id) {
     if (id > 0) {
         var url = "Dispatcher?src=desktop&cmd=addCarrello&pizza=" + id;
         document.getElementById("btnAcquista").style.setProperty("display", "block");
+        document.getElementById("labelClear").style.setProperty("display", "block");
         XMLHTTP = RicavaBrowser(CambioStatoCarrello);
         XMLHTTP.open("GET", url, true);
         XMLHTTP.send(null);
@@ -19,6 +20,7 @@ function RichiestaRemove(id, prezzoTot, prezzoPizza) {
     if (id > 0) {
         if (prezzoTot === prezzoPizza) {
             document.getElementById("btnAcquista").style.setProperty("display", "none");
+            document.getElementById("labelClear").style.setProperty("display", "none");
         }
         var url = "Dispatcher?src=desktop&cmd=removeCarrello&pizza=" + id + "&clear=false";
         XMLHTTP = RicavaBrowser(CambioStatoCarrello);
@@ -28,6 +30,15 @@ function RichiestaRemove(id, prezzoTot, prezzoPizza) {
         document.getElementById("carrelloOrdine").innerHTML = "";
     }
 }
+//svuota carrello (AJAX)
+function RichiestaClear() {
+        document.getElementById("btnAcquista").style.setProperty("display", "none");
+        document.getElementById("labelClear").style.setProperty("display", "none");
+        var url = "Dispatcher?src=desktop&cmd=removeCarrello&clear=true";
+        XMLHTTP = RicavaBrowser(CambioStatoCarrello);
+        XMLHTTP.open("GET", url, true);
+        XMLHTTP.send(null);
+}
 
 // refresh del carrello (esempio: ritorno sulla index.jsp)
 function RichiestaPrintCarrello(sizeCarrello) {
@@ -36,6 +47,7 @@ function RichiestaPrintCarrello(sizeCarrello) {
     if (divCarrello.value === "" || divCarrello.value === undefined || divCarrello.value === null) {
         if (sizeCarrello !== 0) {
             document.getElementById("btnAcquista").style.setProperty("display", "block");
+            document.getElementById("labelClear").style.setProperty("display", "block");
         }
         XMLHTTP = RicavaBrowser(CambioStatoCarrello);
         XMLHTTP.open("GET", url, true);

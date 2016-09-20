@@ -54,20 +54,25 @@ public class DesktopServlet extends HttpServlet {
             System.out.println("[DESKTOP_SERVLET] removeCarrello");
             Utente utente = (Utente) session.getAttribute("utente");
             controlloUtente(utente, "all", response, request);
-            Carrello carrello = (Carrello) session.getAttribute("carrello");
-            int idPizza = Integer.parseInt(request.getParameter("pizza"));
+            Carrello carrello = (Carrello) session.getAttribute("carrello");         
             String clear = request.getParameter("clear");
             if (clear.equals("false")) {
+                System.out.println("[removeCarrello(clear=false)] PrezzoTotaleCarrello: " + carrello.getPrezzoTotale());
+                int idPizza = Integer.parseInt(request.getParameter("pizza"));
                 Pizza pizzaCarrello = (Pizza) DBManager.getPizzaById(idPizza);
                 carrello.removeCarrello(pizzaCarrello);
-                session.setAttribute("carrello", carrello);
-                PrintWriter out = response.getWriter();
-                String html = carrello.printCarrello();
-                System.out.println("[removeCarrello(clear=false)] PrezzoTotaleCarrello: " + carrello.getPrezzoTotale());
-                out.print(html);
-                out.flush();
-                out.close();
+            }else if(clear.equals("true")){
+                System.out.println("[removeCarrello(clear=true)] PrezzoTotaleCarrello: " + carrello.getPrezzoTotale());
+                carrello.clear();
+            }else{
+                goToErrorPage(true, response, request);
             }
+            session.setAttribute("carrello", carrello);
+            PrintWriter out = response.getWriter();
+            String html = carrello.printCarrello();
+            out.print(html);
+            out.flush();
+            out.close();
 
             /*Effettuare login*/
         } else if (cmd.equals("login")) {

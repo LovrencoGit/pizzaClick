@@ -1,9 +1,10 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class Menu {
+public class Menu implements Serializable {
 
     private ArrayList<Pizza> elencoPizze;
 

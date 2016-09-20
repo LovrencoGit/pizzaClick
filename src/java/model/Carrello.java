@@ -1,12 +1,13 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map.Entry;
 import utilities.ArrayListPizzaDisplayer;
 
-public class Carrello {
+public class Carrello implements Serializable {
 
     private ArrayList<Pizza> elencoPizze;
     private double prezzoTotale;
@@ -37,6 +38,7 @@ public class Carrello {
     public void setPrezzoTotale(double prezzoTotale) {
         this.prezzoTotale = prezzoTotale;
     }
+  
 
     /**
      * ******************************************************************
@@ -59,6 +61,11 @@ public class Carrello {
         return false;
     }
 
+    public void clear(){
+        this.elencoPizze.clear();
+        this.prezzoTotale = 0.0;
+    }
+    
     public String printCarrello() {
         String html = "";
         HashMap<Integer, Integer> map = ArrayListPizzaDisplayer.getElencoPizzeToHashMap(elencoPizze);
@@ -71,12 +78,12 @@ public class Carrello {
                     + item.getNomePizza() + "     " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza()) + " € (x " + qty + ")"
                     + "<p class='pNascosto'>" + item.getNomePizza() + "      " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizza()) + " € (x " + qty + ")</p></p>";
         }
-                
-        if (this.getPrezzoTotale() == 0.0) {
+           
+        int numPizze = elencoPizze.size();
+        if (this.getPrezzoTotale() == 0.0 || numPizze==0) {
             html += "";
         } else {
-            int n = elencoPizze.size();
-            String size = (n==1 ? "1 pizza" : n+" pizze");
+            String size = (numPizze==1 ? "1 pizza" : numPizze+" pizze");
             html += "<p>TOTALE " + String.format(Locale.US, "%1$.2f", this.getPrezzoTotale()) + " €  (" + size + ")</p>";
         }
         

@@ -47,7 +47,7 @@ public class MobileServlet extends HttpServlet {
             final Utente utenteLoggato = DBManager.login(utente.getUsername(), utente.getPassword());
             ArrayList<Pizza> menu = new ArrayList<>();
             if (!(utenteLoggato.getRuolo().equals(""))) {
-                menu = DBManager.caricaMenu(utenteLoggato.getRuolo());
+                menu = DBManager.caricaMenu("User");
             }
 
             List lista = new ArrayList<>();

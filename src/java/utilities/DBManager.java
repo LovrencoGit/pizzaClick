@@ -536,8 +536,9 @@ public class DBManager {
                     + "SELECT * "
                     + "FROM PIZZA ";
             if (utente.equals("User")) {
-                query += "WHERE disponibile='T'";
+                query += "WHERE disponibile='T' ";
             }
+            query += "ORDER BY disponibile DESC, prezzoPizza";
             query += ";";
 
             //System.out.println(query);

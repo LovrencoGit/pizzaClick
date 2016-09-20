@@ -1,6 +1,8 @@
 package model;
 
-public class PizzaPrenotata {
+import java.io.Serializable;
+
+public class PizzaPrenotata implements Serializable {
     private int idPizzaPrenotata;
     private int idOrdine;
     private String nomePizzaPrenotata;

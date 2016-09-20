@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -9,7 +10,7 @@ import java.util.Locale;
  *
  * @author Lovrenco
  */
-public class Ordine {
+public class Ordine implements Serializable {
 
     private int idOrdine;
     private int idUtente;

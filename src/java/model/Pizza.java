@@ -1,11 +1,13 @@
 
 package model;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Lovrenco
  */
-public class Pizza {
+public class Pizza implements Serializable {
 
     private int idPizza;
     private String nomePizza;
