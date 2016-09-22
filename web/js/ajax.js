@@ -66,6 +66,15 @@ function RichiestaValutazione(idOrdine) {
     XMLHTTP = RicavaBrowser(CambioStatoCarrello);
     XMLHTTP.open("GET", url, true);
     XMLHTTP.send(null);
+    if(optionSelected === '0'){
+        alert("Votazione precedentemente inserita rimossa correttamente");
+    }else{
+        if(optionSelected === '1'){
+            alert("Grazie per aver valutato il nostro servizio      1 stella");
+        }else{
+            alert("Grazie per aver valutato il nostro servizio      "+optionSelected+" stelle");
+        }
+    }
 }
 
 // getPizzePrenotateByIdOrdine
