@@ -16,7 +16,7 @@
         <main>
         <jsp:include page="header.jsp" flush="true"/>
         <h1>ERRORE!</h1>
-        <h2>Qualcosa &egrave; andato storto.... :\</h2>
+        <h3><%=session.getAttribute("msgerrorjsp")%></h3>
         <jsp:include page="footer.jsp" flush="true"/>
         </main>
     </body>
