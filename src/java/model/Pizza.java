@@ -71,4 +71,30 @@ public class Pizza implements Serializable {
         this.disponibile = disponibile;
     }
 
+    
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Pizza pizza = (Pizza) o;
+
+        if (idPizza != pizza.idPizza) return false;
+        else return true;
+    }
+    
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = idPizza;
+        result = 31 * result + (nomePizza != null ? nomePizza.hashCode() : 0);
+        result = 31 * result + (ingredienti != null ? ingredienti.hashCode() : 0);
+        temp = Double.doubleToLongBits(prezzoPizza);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (disponibile ? 1 : 0);
+        //result = 31 * result + quantita;
+        return result;
+    }
 }

@@ -48,6 +48,9 @@ function RichiestaPrintCarrello(sizeCarrello) {
         if (sizeCarrello !== 0) {
             document.getElementById("btnAcquista").style.setProperty("display", "block");
             document.getElementById("labelClear").style.setProperty("display", "block");
+        }else{
+            document.getElementById("btnAcquista").style.setProperty("display", "none");
+            document.getElementById("labelClear").style.setProperty("display", "none");
         }
         XMLHTTP = RicavaBrowser(CambioStatoCarrello);
         XMLHTTP.open("GET", url, true);
