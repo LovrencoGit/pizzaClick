@@ -33,19 +33,20 @@ public class DesktopServlet extends HttpServlet {
 
             System.out.println("[DESKTOP_SERVLET] addCarrello");
             Utente utente = (Utente) session.getAttribute("utente");
-            controlloUtente(utente, "all", response, request);
-            if (session.getAttribute("carrello") != null) {
-                Carrello carrello = (Carrello) session.getAttribute("carrello");
-                int idPizza = Integer.parseInt(request.getParameter("pizza"));
-                Pizza pizzaCarello = (Pizza) DBManager.getPizzaById(idPizza);
-                carrello.addCarrello(pizzaCarello);
-                session.setAttribute("carrello", carrello);
+            if (controlloUtente(utente, "all", response, request)) {
+                if (session.getAttribute("carrello") != null) {
+                    Carrello carrello = (Carrello) session.getAttribute("carrello");
+                    int idPizza = Integer.parseInt(request.getParameter("pizza"));
+                    Pizza pizzaCarello = (Pizza) DBManager.getPizzaById(idPizza);
+                    carrello.addCarrello(pizzaCarello);
+                    session.setAttribute("carrello", carrello);
 
-                PrintWriter out = response.getWriter();
-                String html = carrello.printCarrello();
-                out.print(html);
-                out.flush();
-                out.close();
+                    PrintWriter out = response.getWriter();
+                    String html = carrello.printCarrello();
+                    out.print(html);
+                    out.flush();
+                    out.close();
+                }
             }
 
             /*Rimuovere pizza dal carrello*/
@@ -53,30 +54,32 @@ public class DesktopServlet extends HttpServlet {
 
             System.out.println("[DESKTOP_SERVLET] removeCarrello");
             Utente utente = (Utente) session.getAttribute("utente");
-            controlloUtente(utente, "all", response, request);
-            Carrello carrello = (Carrello) session.getAttribute("carrello");         
-            String clear = request.getParameter("clear");
-            if (clear.equals("false")) {
-                System.out.println("[removeCarrello(clear=false)] PrezzoTotaleCarrello: " + carrello.getPrezzoTotale());
-                int idPizza = Integer.parseInt(request.getParameter("pizza"));
-                Pizza pizzaCarrello = (Pizza) DBManager.getPizzaById(idPizza);
-                carrello.removeCarrello(pizzaCarrello);
-            }else if(clear.equals("true")){
-                System.out.println("[removeCarrello(clear=true)] PrezzoTotaleCarrello: " + carrello.getPrezzoTotale());
-                carrello.clear();
-            }else{
-                goToErrorPage(true, response, request);
+            if (controlloUtente(utente, "all", response, request)) {
+                Carrello carrello = (Carrello) session.getAttribute("carrello");
+                String clear = request.getParameter("clear");
+                if (clear.equals("false")) {
+                    System.out.println("[removeCarrello(clear=false)] PrezzoTotaleCarrello: " + carrello.getPrezzoTotale());
+                    int idPizza = Integer.parseInt(request.getParameter("pizza"));
+                    Pizza pizzaCarrello = (Pizza) DBManager.getPizzaById(idPizza);
+                    carrello.removeCarrello(pizzaCarrello);
+                } else if (clear.equals("true")) {
+                    System.out.println("[removeCarrello(clear=true)] PrezzoTotaleCarrello: " + carrello.getPrezzoTotale());
+                    carrello.clear();
+                } else {
+                    goToErrorPage(true, response, request);
+                }
+                session.setAttribute("carrello", carrello);
+                PrintWriter out = response.getWriter();
+                String html = carrello.printCarrello();
+                out.print(html);
+                out.flush();
+                out.close();
             }
-            session.setAttribute("carrello", carrello);
-            PrintWriter out = response.getWriter();
-            String html = carrello.printCarrello();
-            out.print(html);
-            out.flush();
-            out.close();
 
             /*Effettuare login*/
         } else if (cmd.equals("login")) {
 
+            System.out.println("[DESKTOP_SERVLET] login");
             String username = request.getParameter("txtUsername");
             goToErrorPage(InputChecker.checkGenericText(username), response, request);
             String password = request.getParameter("txtPassword");
@@ -94,6 +97,7 @@ public class DesktopServlet extends HttpServlet {
             /*Effettuare logout*/
         } else if (cmd.equals("logout")) {
 
+            System.out.println("[DESKTOP_SERVLET] logout");
             if (session.getAttribute("utente") != null) {
                 session.removeAttribute("utente");
                 session.removeAttribute("carrello");
@@ -106,178 +110,193 @@ public class DesktopServlet extends HttpServlet {
 
         } else if (cmd.equals("doveSiamo")) {
 
+            System.out.println("[DESKTOP_SERVLET] doveSiamo");
             rd = request.getRequestDispatcher("doveSiamo.jsp");
             rd.forward(request, response);
 
         } else if (cmd.equals("chiSiamo")) {
 
+            System.out.println("[DESKTOP_SERVLET] chiSiamo");
             rd = request.getRequestDispatcher("chiSiamo.jsp");
             rd.forward(request, response);
 
         } else if (cmd.equals("gallery")) {
 
+            System.out.println("[DESKTOP_SERVLET] gallery");
             rd = request.getRequestDispatcher("gallery.jsp");
             rd.forward(request, response);
 
         } else if (cmd.equals("index")) {
 
+            System.out.println("[DESKTOP_SERVLET] index");
             rd = request.getRequestDispatcher("index.jsp");
             rd.forward(request, response);
 
         } else if (cmd.equals("crud")) {
 
+            System.out.println("[DESKTOP_SERVLET] crud");
             Utente utente = (Utente) session.getAttribute("utente");
-            controlloUtente(utente, "A", response, request);
-            ArrayList menuCrud = DBManager.caricaMenu("Admin");
-            session.setAttribute("elenco_pizze_admin", menuCrud);
-            rd = request.getRequestDispatcher("crud.jsp");
-            rd.forward(request, response);
+            if (controlloUtente(utente, "A", response, request)) {
+                ArrayList menuCrud = DBManager.caricaMenu("Admin");
+                session.setAttribute("elenco_pizze_admin", menuCrud);
+                rd = request.getRequestDispatcher("crud.jsp");
+                rd.forward(request, response);
+            }
 
             /*Aggiungere pizza al menu*/
         } else if (cmd.equals("addMenu")) {
 
+            System.out.println("[DESKTOP_SERVLET] addMenu");
             Utente utente = (Utente) session.getAttribute("utente");
-            controlloUtente(utente, "A", response, request);
-            String nomePizza = request.getParameter("txtNomePizza");
-            goToErrorPage(InputChecker.checkGenericText(nomePizza), response, request);
-            String ingredienti = request.getParameter("txtIngredienti");
-            goToErrorPage(InputChecker.checkGenericText(ingredienti), response, request);
-            String prezzoString = request.getParameter("txtPrezzoPizza");
-            goToErrorPage(InputChecker.checkPrezzo(prezzoString + ""), response, request);
-            double prezzoPizza = Double.parseDouble(prezzoString);
-            String disponibile = request.getParameter("optDisponibile");
-            DBManager.inserisciNuovaPizza(nomePizza, ingredienti, prezzoPizza, disponibile);
-            ArrayList menuCrud = DBManager.caricaMenu("Admin");
-            session.setAttribute("elenco_pizze_admin", menuCrud);
-            rd = request.getRequestDispatcher("crud.jsp");
-            rd.forward(request, response);
-
+            if (controlloUtente(utente, "A", response, request)) {
+                String nomePizza = request.getParameter("txtNomePizza");
+                goToErrorPage(InputChecker.checkGenericText(nomePizza), response, request);
+                String ingredienti = request.getParameter("txtIngredienti");
+                goToErrorPage(InputChecker.checkGenericText(ingredienti), response, request);
+                String prezzoString = request.getParameter("txtPrezzoPizza");
+                goToErrorPage(InputChecker.checkPrezzo(prezzoString + ""), response, request);
+                double prezzoPizza = Double.parseDouble(prezzoString);
+                String disponibile = request.getParameter("optDisponibile");
+                DBManager.inserisciNuovaPizza(nomePizza, ingredienti, prezzoPizza, disponibile);
+                ArrayList menuCrud = DBManager.caricaMenu("Admin");
+                session.setAttribute("elenco_pizze_admin", menuCrud);
+                rd = request.getRequestDispatcher("crud.jsp");
+                rd.forward(request, response);
+            }
             /*Modificare pizza del menu*/
         } else if (cmd.equals("editMenu")) {
 
+            System.out.println("[DESKTOP_SERVLET] editMenu");
             Utente utente = (Utente) session.getAttribute("utente");
-            controlloUtente(utente, "A", response, request);
-            int idPizzaEdit = Integer.parseInt(request.getParameter("idPizza"));
+            if (controlloUtente(utente, "A", response, request)) {
+                int idPizzaEdit = Integer.parseInt(request.getParameter("idPizza"));
+                String nomePizza = request.getParameter("txtNomePizza");
+                goToErrorPage(InputChecker.checkGenericText(nomePizza), response, request);
+                String ingredienti = request.getParameter("txtIngredienti");
+                goToErrorPage(InputChecker.checkGenericText(ingredienti), response, request);
+                String prezzoPizzaString = request.getParameter("txtPrezzoPizza");
+                goToErrorPage(InputChecker.checkPrezzo(prezzoPizzaString), response, request);
+                double prezzoPizza = Double.parseDouble(prezzoPizzaString);
+                String disponibile = request.getParameter("optDisponibile");
+                DBManager.modificaPizza(idPizzaEdit, nomePizza, ingredienti, prezzoPizza, disponibile);
+                ArrayList<Pizza> elencoAdmin = (ArrayList<Pizza>) session.getAttribute("elenco_pizze_admin");
+                ArrayList<Pizza> elencoUser = (ArrayList<Pizza>) session.getAttribute("elenco_pizze_user");
+                Pizza pizzaNew = new Pizza(idPizzaEdit, nomePizza, ingredienti, prezzoPizza, disponibile.equals("T"));
+                elencoAdmin = editInElencoAdmin(elencoAdmin, pizzaNew);
+                elencoUser = editInElencoUser(elencoUser, pizzaNew);
+                session.setAttribute("elenco_pizze_admin", elencoAdmin);
+                session.setAttribute("elenco_pizze_user", elencoUser);
 
-            String nomePizza = request.getParameter("txtNomePizza");
-            goToErrorPage(InputChecker.checkGenericText(nomePizza), response, request);
-            String ingredienti = request.getParameter("txtIngredienti");
-            goToErrorPage(InputChecker.checkGenericText(ingredienti), response, request);
-            String prezzoPizzaString = request.getParameter("txtPrezzoPizza");
-            goToErrorPage(InputChecker.checkPrezzo(prezzoPizzaString), response, request);
-            double prezzoPizza = Double.parseDouble(prezzoPizzaString);
-            String disponibile = request.getParameter("optDisponibile");
-            DBManager.modificaPizza(idPizzaEdit, nomePizza, ingredienti, prezzoPizza, disponibile);
-            ArrayList<Pizza> elencoAdmin = (ArrayList<Pizza>) session.getAttribute("elenco_pizze_admin");
-            ArrayList<Pizza> elencoUser = (ArrayList<Pizza>) session.getAttribute("elenco_pizze_user");
-            Pizza pizzaNew = new Pizza(idPizzaEdit, nomePizza, ingredienti, prezzoPizza, disponibile.equals("T"));
-            elencoAdmin = editInElencoAdmin(elencoAdmin, pizzaNew);
-            elencoUser = editInElencoUser(elencoUser, pizzaNew);
-            session.setAttribute("elenco_pizze_admin", elencoAdmin);
-            session.setAttribute("elenco_pizze_user", elencoUser);
-
-            rd = request.getRequestDispatcher("crud.jsp");
-            rd.forward(request, response);
-
+                rd = request.getRequestDispatcher("crud.jsp");
+                rd.forward(request, response);
+            }
             /*Cancellare pizza dal menu*/
         } else if (cmd.equals("deleteMenu")) {
 
+            System.out.println("[DESKTOP_SERVLET] deleteMenu");
             Utente utente = (Utente) session.getAttribute("utente");
-            controlloUtente(utente, "A", response, request);
-            int idPizzaDelete = Integer.parseInt(request.getParameter("idPizza"));
-            DBManager.rimuoviPizza(idPizzaDelete);
-            ArrayList menuCrud = DBManager.caricaMenu("Admin");
-            session.setAttribute("elenco_pizze_admin", menuCrud);
-            rd = request.getRequestDispatcher("crud.jsp");
-            rd.forward(request, response);
+            if (controlloUtente(utente, "A", response, request)) {
+                int idPizzaDelete = Integer.parseInt(request.getParameter("idPizza"));
+                DBManager.rimuoviPizza(idPizzaDelete);
+                ArrayList menuCrud = DBManager.caricaMenu("Admin");
+                session.setAttribute("elenco_pizze_admin", menuCrud);
+                rd = request.getRequestDispatcher("crud.jsp");
+                rd.forward(request, response);
+            }
 
             /*Stampare carrello al refresh*/
         } else if (cmd.equals("printCarrello")) {
 
+            System.out.println("[DESKTOP_SERVLET] printCarrello");
             Utente utente = (Utente) session.getAttribute("utente");
-            controlloUtente(utente, "all", response, request);
-            Carrello c = (Carrello) session.getAttribute("carrello");
-            PrintWriter out = response.getWriter();
-            String html = "";
-            if (c != null && !c.getElencoPizze().isEmpty()) {
-                html = c.printCarrello();
+            if (controlloUtente(utente, "all", response, request)) {;
+                Carrello c = (Carrello) session.getAttribute("carrello");
+                PrintWriter out = response.getWriter();
+                String html = "";
+                if (c != null && !c.getElencoPizze().isEmpty()) {
+                    html = c.printCarrello();
+                }
+                out.print(html);
+                out.flush();
+                out.close();
             }
-            out.print(html);
-            out.flush();
-            out.close();
-
         } else if (cmd.equals("acquista")) {
 
+            System.out.println("[DESKTOP_SERVLET] acquista");
             Utente utente = (Utente) session.getAttribute("utente");
-            controlloUtente(utente, "all", response, request);
-            Ordine o = new Ordine();
-            Carrello carrello = (Carrello) session.getAttribute("carrello");
-            String indirizzo = request.getParameter("txtIndirizzo");
-            goToErrorPage(InputChecker.checkGenericText(indirizzo), response, request);
-            String data = request.getParameter("txtData");
-            goToErrorPage(InputChecker.checkData(data), response, request);
-            String time = request.getParameter("txtOrario");
-            goToErrorPage(InputChecker.checkOra(time), response, request);
+            if (controlloUtente(utente, "all", response, request)) {
+                Ordine o = new Ordine();
+                Carrello carrello = (Carrello) session.getAttribute("carrello");
+                String indirizzo = request.getParameter("txtIndirizzo");
+                goToErrorPage(InputChecker.checkGenericText(indirizzo), response, request);
+                String data = request.getParameter("txtData");
+                goToErrorPage(InputChecker.checkData(data), response, request);
+                String time = request.getParameter("txtOrario");
+                goToErrorPage(InputChecker.checkOra(time), response, request);
 
-            //YYYY-MM-DD HH:MM:SS (SS-> default 00)
-            String datatime = data + " " + time + ":00";
-            DBManager.acquista(carrello, utente, indirizzo, datatime);
-            ArrayList<Ordine> elencoOrdini = DBManager.getOrdiniUtente(utente);
-            session.setAttribute("elenco_ordini", elencoOrdini);
-            session.setAttribute("carrello", new Carrello());
-            boolean feedbackAcquista = true;
-            session.setAttribute("feedbackAcquista", feedbackAcquista);
-            rd = request.getRequestDispatcher("Dispatcher?src=desktop&cmd=visualizzaOrdini");
-            rd.forward(request, response);
-
+                //YYYY-MM-DD HH:MM:SS (SS-> default 00)
+                String datatime = data + " " + time + ":00";
+                DBManager.acquista(carrello, utente, indirizzo, datatime);
+                ArrayList<Ordine> elencoOrdini = DBManager.getOrdiniUtente(utente);
+                session.setAttribute("elenco_ordini", elencoOrdini);
+                session.setAttribute("carrello", new Carrello());
+                boolean feedbackAcquista = true;
+                session.setAttribute("feedbackAcquista", feedbackAcquista);
+                rd = request.getRequestDispatcher("Dispatcher?src=desktop&cmd=visualizzaOrdini");
+                rd.forward(request, response);
+            }
         } else if (cmd.equals("visualizzaOrdini")) {
 
+            System.out.println("[DESKTOP_SERVLET] visualizzaOrdini");
             Utente utente = (Utente) session.getAttribute("utente");
-            controlloUtente(utente, "all", response, request);
-            ArrayList<Ordine> elencoOrdini = DBManager.getOrdiniUtente(utente);
-            session.setAttribute("elenco_ordini", elencoOrdini);
-            if (session.getAttribute("feedbackAcquista") == null) {
-                session.setAttribute("feedbackAcquista", false);
+            if (controlloUtente(utente, "all", response, request)) {
+                ArrayList<Ordine> elencoOrdini = DBManager.getOrdiniUtente(utente);
+                session.setAttribute("elenco_ordini", elencoOrdini);
+                if (session.getAttribute("feedbackAcquista") == null) {
+                    session.setAttribute("feedbackAcquista", false);
+                }
+                rd = request.getRequestDispatcher("gestioneOrdini.jsp");
+                rd.forward(request, response);
             }
-            rd = request.getRequestDispatcher("gestioneOrdini.jsp");
-            rd.forward(request, response);
-
         } else if (cmd.equals("annullaOrdine")) {
 
+            System.out.println("[DESKTOP_SERVLET] annullaOrdine");
             Utente utente = (Utente) session.getAttribute("utente");
-            controlloUtente(utente, "all", response, request);
-            int idOrdine = Integer.parseInt(request.getParameter("idOrdine"));
-            DBManager.annullaOrdine(idOrdine);
-            ArrayList<Ordine> elencoOrdini = DBManager.getOrdiniUtente(utente);
-            session.setAttribute("elenco_ordini", elencoOrdini);
-            rd = request.getRequestDispatcher("gestioneOrdini.jsp");
-            rd.forward(request, response);
-
+            if (controlloUtente(utente, "all", response, request)) {
+                int idOrdine = Integer.parseInt(request.getParameter("idOrdine"));
+                DBManager.annullaOrdine(idOrdine);
+                ArrayList<Ordine> elencoOrdini = DBManager.getOrdiniUtente(utente);
+                session.setAttribute("elenco_ordini", elencoOrdini);
+                rd = request.getRequestDispatcher("gestioneOrdini.jsp");
+                rd.forward(request, response);
+            }
         } else if (cmd.equals("avvenutaConsegna")) {
 
+            System.out.println("[DESKTOP_SERVLET] avvenutaConsegna");
             Utente utente = (Utente) session.getAttribute("utente");
-            controlloUtente(utente, "all", response, request);
-            int idOrdine = Integer.parseInt(request.getParameter("idOrdine"));
-            DBManager.avvenutaConsegna(idOrdine);
-            ArrayList<Ordine> elencoOrdini = DBManager.getOrdiniUtente(utente);
-            session.setAttribute("elenco_ordini", elencoOrdini);
-            rd = request.getRequestDispatcher("gestioneOrdini.jsp");
-            rd.forward(request, response);
-
+            if (controlloUtente(utente, "all", response, request)) {
+                int idOrdine = Integer.parseInt(request.getParameter("idOrdine"));
+                DBManager.avvenutaConsegna(idOrdine);
+                ArrayList<Ordine> elencoOrdini = DBManager.getOrdiniUtente(utente);
+                session.setAttribute("elenco_ordini", elencoOrdini);
+                rd = request.getRequestDispatcher("gestioneOrdini.jsp");
+                rd.forward(request, response);
+            }
         } else if (cmd.equals("valutaOrdine")) {
 
-            System.out.println("[valutaOrdine]");
+            System.out.println("[DESKTOP_SERVLET] valutaOrdine");
             Utente utente = (Utente) session.getAttribute("utente");
-            controlloUtente(utente, "all", response, request);
-            int idOrdine = Integer.parseInt(request.getParameter("idOrdine"));
-            int rating = Integer.parseInt(request.getParameter("rating"));
-            System.out.println("rate[" + rating + "]");
-            DBManager.inserisciValutazione(idOrdine, rating);
-            ArrayList<Ordine> elencoOrdini = DBManager.getOrdiniUtente(utente);
-            session.setAttribute("elenco_ordini", elencoOrdini);
-
+            if (controlloUtente(utente, "all", response, request)) {
+                int idOrdine = Integer.parseInt(request.getParameter("idOrdine"));
+                int rating = Integer.parseInt(request.getParameter("rating"));
+                System.out.println("rate[" + rating + "]");
+                DBManager.inserisciValutazione(idOrdine, rating);
+                ArrayList<Ordine> elencoOrdini = DBManager.getOrdiniUtente(utente);
+                session.setAttribute("elenco_ordini", elencoOrdini);
+            }
         } else if (cmd.equals("pizzeOrdine")) {
 
+            System.out.println("[DESKTOP_SERVLET] pizzeOrdine");
             int idOrdine = Integer.parseInt(request.getParameter("idOrdine"));
             //System.out.println("*********" + idOrdine + "***********");
             ArrayList<PizzaPrenotata> elencoPizze = DBManager.getElencoPizzeByIdOrdine(idOrdine);
@@ -285,12 +304,12 @@ public class DesktopServlet extends HttpServlet {
             String html = "";
             html += "<button class='floatRight' id='chiudiInfoOrdine' onclick='allMostra()'>X</button>";
             html += "<h2>Ordine selezionato: </h2>";
-            HashMap<String,Integer> map = ArrayListPizzaPrenotataDisplayer.getElencoPizzaPrenotataToHashMap(elencoPizze);
-            for(Entry<String, Integer> entry : map.entrySet()) {
+            HashMap<String, Integer> map = ArrayListPizzaPrenotataDisplayer.getElencoPizzaPrenotataToHashMap(elencoPizze);
+            for (Entry<String, Integer> entry : map.entrySet()) {
                 String nome = entry.getKey();
                 PizzaPrenotata item = ArrayListPizzaPrenotataDisplayer.getPizzaByNomePizza(elencoPizze, nome);
                 Integer qty = entry.getValue();
-                html += "<p> - " + item.getNomePizzaPrenotata() + "                                       " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizzaPrenotata()) + " €  (x "+ qty +")</p>";
+                html += "<p> - " + item.getNomePizzaPrenotata() + "                                       " + String.format(Locale.US, "%1$.2f", item.getPrezzoPizzaPrenotata()) + " €  (x " + qty + ")</p>";
             }
             out.print(html);
             out.flush();
@@ -298,55 +317,47 @@ public class DesktopServlet extends HttpServlet {
 
         } else if (cmd.equals("gestisciOrdiniAdmin")) {
 
+            System.out.println("[DESKTOP_SERVLET] gestisciOrdiniAdmin");
             Utente utente = (Utente) session.getAttribute("utente");
-            controlloUtente(utente, "A", response, request);
-            ArrayList<Utente> elencoUsername = DBManager.getUsernames();
-            ArrayList<Ordine> elencoOrdiniAdmin = DBManager.getOrdiniAdmin();
-            session.setAttribute("elenco_ordini_admin", elencoOrdiniAdmin);
-            session.setAttribute("elenco_usernames", elencoUsername);
-            rd = request.getRequestDispatcher("gestioneOrdiniAdmin.jsp");
-            rd.forward(request, response);
-
+            if (controlloUtente(utente, "A", response, request)) {
+                ArrayList<Utente> elencoUsername = DBManager.getUsernames();
+                ArrayList<Ordine> elencoOrdiniAdmin = DBManager.getOrdiniAdmin();
+                session.setAttribute("elenco_ordini_admin", elencoOrdiniAdmin);
+                session.setAttribute("elenco_usernames", elencoUsername);
+                rd = request.getRequestDispatcher("gestioneOrdiniAdmin.jsp");
+                rd.forward(request, response);
+            }
         } else if (cmd.equals("deleteOrdine")) {
 
+            System.out.println("[DESKTOP_SERVLET] deleteOrdine");
             Utente utente = (Utente) session.getAttribute("utente");
-            controlloUtente(utente, "A", response, request);
-            int idOrdineDelete = Integer.parseInt(request.getParameter("idOrdine"));
-            DBManager.rimuoviOrdine(idOrdineDelete);
-            ArrayList<Ordine> elencoOrdiniAdmin = DBManager.getOrdiniAdmin();
-            session.setAttribute("elenco_ordini_admin", elencoOrdiniAdmin);
-            rd = request.getRequestDispatcher("gestioneOrdiniAdmin.jsp");
-            rd.forward(request, response);
-
+            if (controlloUtente(utente, "A", response, request)) {
+                int idOrdineDelete = Integer.parseInt(request.getParameter("idOrdine"));
+                DBManager.rimuoviOrdine(idOrdineDelete);
+                ArrayList<Ordine> elencoOrdiniAdmin = DBManager.getOrdiniAdmin();
+                session.setAttribute("elenco_ordini_admin", elencoOrdiniAdmin);
+                rd = request.getRequestDispatcher("gestioneOrdiniAdmin.jsp");
+                rd.forward(request, response);
+            }
         } else if (cmd.equals("visualizzaProfilo")) {
 
+            System.out.println("[DESKTOP_SERVLET] visualizzaProfilo");
             Utente utente = (Utente) session.getAttribute("utente");
-            controlloUtente(utente, "all", response, request);
-            int nOrdini = DBManager.contaOrdiniUtente(utente.getIdUtente());
-            session.setAttribute("utente", utente);
-            if (nOrdini != Integer.MAX_VALUE) {
-                session.setAttribute("nOrdini", nOrdini);
+            if (controlloUtente(utente, "all", response, request)) {
+                int nOrdini = DBManager.contaOrdiniUtente(utente.getIdUtente());
+                session.setAttribute("utente", utente);
+                if (nOrdini != Integer.MAX_VALUE) {
+                    session.setAttribute("nOrdini", nOrdini);
+                }
+                rd = request.getRequestDispatcher("visualizzaProfilo.jsp");
+                rd.forward(request, response);
             }
-            rd = request.getRequestDispatcher("visualizzaProfilo.jsp");
-            rd.forward(request, response);
         }
 
     }
 
     /**
      * **** METODI AUSILIARI *****
-     */
-    /*
-    private ArrayList<Pizza> editInElenco(ArrayList<Pizza> elenco, Pizza pizzaOld, Pizza pizzaNew){
-        for(int i = 0; i<elenco.size();i++){
-            if(elenco.get(i).getIdPizza() == pizzaOld.getIdPizza()){
-                elenco.remove(i);
-                elenco.add(i, pizzaNew);
-                return elenco;
-            }
-        }
-        return elenco;
-    }
      */
     private ArrayList<Pizza> editInElencoAdmin(ArrayList<Pizza> elencoAdmin, Pizza pizzaNew) {
         for (int i = 0; i < elencoAdmin.size(); i++) {
@@ -385,13 +396,19 @@ public class DesktopServlet extends HttpServlet {
         return elenco;
     }
 
-    private void controlloUtente(Utente utente, String utenteRichiesto, HttpServletResponse response, HttpServletRequest request)
+    /**
+     * @return true, utente autorizzato
+     * @return false, utente non autorizzato -> page error.jsp
+     */
+    private boolean controlloUtente(Utente utente, String utenteRichiesto, HttpServletResponse response, HttpServletRequest request)
             throws IOException, ServletException {
         if (!(utenteRichiesto.equals("all")) && !(utente.getRuolo().equals(utenteRichiesto))) {
             RequestDispatcher rd;
             rd = request.getRequestDispatcher("error.jsp");
             rd.forward(request, response);
+            return false;
         }
+        return true;
     }
 
     private void goToErrorPage(boolean check, HttpServletResponse response, HttpServletRequest request)
