@@ -198,8 +198,12 @@ public class Ordine implements Serializable {
             ordiniToHTML += "<td class='padding'>" + item.getData().substring(0, 10) + "</td>";
             ordiniToHTML += "<td class='padding'>" + item.getData().substring(11, 16) + "</td>";
 
-            ordiniToHTML += "<td align='center' class='padding'>"
-                    +"<label> "+(score==0 ? "-":score+"/5 stelle")+" </label>"
+            ordiniToHTML += "<td align='center' class='padding'>";
+            if(item.isAnnullato()){
+                ordiniToHTML +="<label> <i>annullato</i> </label>";
+            }else{
+                ordiniToHTML +="<label> "+(score==0 ? "-":score+"/5 stelle")+" </label>";
+            }
                     /*
                     + "<select id='rating" + item.getIdOrdine() + "' class='mostraRating' onchange='RichiestaValutazione(" + item.getIdOrdine() + ")'>"
                     + "<option value=''></option>"
@@ -210,7 +214,7 @@ public class Ordine implements Serializable {
                     + (score == 5 ? "<option value='5' selected='selected'>5</option>" : "<option value='5'>5</option>")
                     + "</select>"
                     */
-                    + "</td><td><a href='javascript:void(0)' onclick='RichiestaPizzeOrdine(" + item.getIdOrdine() + ")' id='mostra" + item.getIdOrdine() + "' class='showMostra' >Mostra</a></td>";
+            ordiniToHTML += "</td><td><a href='javascript:void(0)' onclick='RichiestaPizzeOrdine(" + item.getIdOrdine() + ")' id='mostra" + item.getIdOrdine() + "' class='showMostra' >Mostra</a></td>";
             ordiniToHTML += "<td class='padding'><a href='Dispatcher?src=desktop&cmd=deleteOrdine&idOrdine=" + item.getIdOrdine() + "'><img src='img/delete_70x70.png' width='35px' height='35px'/></td>";
             ordiniToHTML += "</tr>";
             cont--;

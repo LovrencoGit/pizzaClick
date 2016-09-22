@@ -344,7 +344,9 @@ public class DBManager {
         }
         try {
 
-            String action = "SELECT ORDINE.idORDINE, ORDINE.idUtente, prezzoTotale, ORDINE.indirizzo, ORDINE.data, valutazione FROM ORDINE, UTENTE "
+            String action = "SELECT ORDINE.idORDINE, ORDINE.idUtente, prezzoTotale, ORDINE.indirizzo, "
+                    + "ORDINE.data, valutazione, ORDINE.annullato, ORDINE.consegnato  "
+                    + "FROM ORDINE, UTENTE "
                     + "WHERE ORDINE.idUTENTE=UTENTE.idUTENTE ORDER BY UTENTE.username;";
             ResultSet rs = stm.executeQuery(action);
 
@@ -357,6 +359,9 @@ public class DBManager {
                 ordine.setIndirizzo(rs.getString("indirizzo"));
                 ordine.setData(rs.getString("data"));
                 ordine.setValutazione(rs.getInt("valutazione"));
+                ordine.setAnnullato(rs.getString("annullato").equals("T"));
+                ordine.setConsegnato(rs.getString("consegnato").equals("T"));
+                
                 elencoOrdini.add(ordine);
             }
             System.out.println("ordini prelevati correttamente");
