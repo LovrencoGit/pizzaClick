@@ -313,7 +313,8 @@ public class DBManager {
         System.out.println("Sto per contare gli ordini");
 
         try {
-            String action = "SELECT COUNT(idORDINE) FROM ORDINE WHERE idUTENTE=" + idUtente + ";";
+            String action = "SELECT COUNT(idORDINE), annullato FROM ORDINE WHERE idUTENTE=" + idUtente + " AND annullato='F';";
+            //System.out.println(action);
             ResultSet rs = stm.executeQuery(action);
             while (rs.next()) {
                 output = rs.getInt("COUNT(idORDINE)");
