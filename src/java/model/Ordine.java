@@ -136,28 +136,28 @@ public class Ordine implements Serializable {
             int score = item.getValutazione();
             boolean displayBtnAnnulla = controlloDisplayAnnulla(item.getData());
             ordiniToHTML += (feedBackAcquista && i == elencoOrdini.size() - 1 ? "<tr id='orderSelected" + item.getIdOrdine() + "' class='lastOrder rowOrder'>" : "<tr id='orderSelected" + item.getIdOrdine() + "' class='rowOrder'>");
-            ordiniToHTML += "<td class='padding'>" + cont + "</td>";
-            ordiniToHTML += "<td class='padding'>" + String.format(Locale.US, "%1$.2f", item.getPrezzoTotale()) + " €</td>";
-            ordiniToHTML += "<td class='padding'>" + item.getIndirizzo() + "</td>";
-            ordiniToHTML += "<td class='padding'>" + item.getData().substring(0, 10) + "</td>";
-            ordiniToHTML += "<td class='padding'>" + item.getData().substring(11, 16) + "</td>";
+            ordiniToHTML += "<td class='rowTableUser'>" + cont + "</td>";
+            ordiniToHTML += "<td class='rowTableUser'>" + String.format(Locale.US, "%1$.2f", item.getPrezzoTotale()) + " €</td>";
+            ordiniToHTML += "<td class='rowTableUser'>" + item.getIndirizzo() + "</td>";
+            ordiniToHTML += "<td class='rowTableUser'>" + item.getData().substring(0, 10) + "</td>";
+            ordiniToHTML += "<td class='rowTableUser'>" + item.getData().substring(11, 16) + "</td>";
             if (!(item.isConsegnato())) {
                 if (displayBtnAnnulla) {
-                    ordiniToHTML += "<td class='padding'><button onclick='RichiestaAnnullaOrdine(" + item.getIdOrdine() + ")' id='btnAnnullaOrdine'>Annulla</button></td>";
+                    ordiniToHTML += "<td class='rowTableUser'><button onclick='RichiestaAnnullaOrdine(" + item.getIdOrdine() + ")' id='btnAnnullaOrdine'>Annulla</button></td>";
                 } else {
-                    ordiniToHTML += "<td class='padding'><button onclick='RichiestaAnnullaOrdine(" + item.getIdOrdine() + ")' id='btnAnnullaOrdine' class='hide'>Annulla</button></td>";
+                    ordiniToHTML += "<td class='rowTableUser'><button onclick='RichiestaAnnullaOrdine(" + item.getIdOrdine() + ")' id='btnAnnullaOrdine' class='hide'>Annulla</button></td>";
                 }
             } else {
-                ordiniToHTML += "<td class='padding'><button onclick='RichiestaAnnullaOrdine(" + item.getIdOrdine() + ")' id='btnAnnullaOrdine' class='hide'>Annulla</button></td>";
+                ordiniToHTML += "<td class='rowTableUser'><button onclick='RichiestaAnnullaOrdine(" + item.getIdOrdine() + ")' id='btnAnnullaOrdine' class='hide'>Annulla</button></td>";
             }
             
             if (item.isConsegnato()) {
-                ordiniToHTML += "<td class='padding'>Consegna avvenuta!</td>";
+                ordiniToHTML += "<td class='rowTableUser'>Consegna avvenuta!</td>";
             } else {
-                ordiniToHTML += "<td class='padding'><button onclick='RichiestaAvvenutaConsegna(" + item.getIdOrdine() + ")' id='btnConsegnato'>Avvenuta consegna</button></td>";
+                ordiniToHTML += "<td class='rowTableUser'><button onclick='RichiestaAvvenutaConsegna(" + item.getIdOrdine() + ")' id='btnConsegnato'>Avvenuta consegna</button></td>";
             }
             
-            ordiniToHTML += "<td align='center' class='padding'>";
+            ordiniToHTML += "<td align='center' class='rowTableUser'>";
             if (item.isConsegnato()) {    
                 ordiniToHTML += "<select id='rating" + item.getIdOrdine() + "' class='rating' onchange='RichiestaValutazione(" + item.getIdOrdine() + ")'>";
             }else{
@@ -223,7 +223,7 @@ public class Ordine implements Serializable {
                     + "</select>"
                     */
             ordiniToHTML += "</td><td><a href='javascript:void(0)' onclick='RichiestaPizzeOrdine(" + item.getIdOrdine() + ")' id='mostra" + item.getIdOrdine() + "' class='showMostra' >Mostra</a></td>";
-            ordiniToHTML += "<td class='padding'><a href='Dispatcher?src=desktop&cmd=deleteOrdine&idOrdine=" + item.getIdOrdine() + "'><img src='img/delete_70x70.png' width='35px' height='35px'/></td>";
+            ordiniToHTML += "<td id='tdImg"+item.getIdOrdine()+"' class='padding'><a href='Dispatcher?src=desktop&cmd=deleteOrdine&idOrdine=" + item.getIdOrdine() + "'><img src='img/delete_70x70.png' width='35px' height='35px'/></td>";
             ordiniToHTML += "</tr>";
             cont--;
         }

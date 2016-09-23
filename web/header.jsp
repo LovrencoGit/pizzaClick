@@ -85,10 +85,10 @@
             <li class="dropdown">
                 <a href="javascript:void(0)" class="btnTendina" onclick="mostra()" id="btnTendina1">Profilo</a>
                 <div class="tendina" id="tendina">
-                    <a href="Dispatcher?src=desktop&cmd=gestisciOrdiniAdmin">Gestione ordini clienti</a>
                     <a href="Dispatcher?src=desktop&cmd=visualizzaOrdini">I miei ordini</a>
                     <a href="Dispatcher?src=desktop&cmd=visualizzaProfilo">Visualizza profilo</a>
-                    <a href="Dispatcher?src=desktop&cmd=crud">Gestione menu</a>
+                    <a href="Dispatcher?src=desktop&cmd=gestisciOrdiniAdmin"><i>Gestione ordini</i></a>
+                    <a href="Dispatcher?src=desktop&cmd=crud"><i>Gestione menu</i></a>
                 </div>
             </li>
             <%} else if (UtenteBean.getRuolo().equals("U")) {%>

@@ -53,6 +53,10 @@
 .pNascosto{
     display: none;
 }
+
+.rowTableUser{
+    padding: 10px;
+}
 /*
 .not-clickable{
     pointer-events:none;

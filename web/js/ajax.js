@@ -88,7 +88,11 @@ function RichiestaPizzeOrdine(idOrdine) {
         rowOrder[i].style.setProperty("background-color", "white");
     }
     document.getElementById("divPizzeOrdine").style.setProperty("display", "block");
-    document.getElementById("orderSelected" + idOrdine).style.setProperty("background-color", "yellow");
+    document.getElementById("orderSelected" + idOrdine).style.setProperty("background-color", "lightgreen");
+    var tdImg = document.getElementById("tdImg"+idOrdine);
+    if(tdImg !== null){
+        tdImg.style.setProperty("background-color", "white");
+    }
     
     
     XMLHTTP = RicavaBrowser(CambioStatoDivPizzeOrdine);
