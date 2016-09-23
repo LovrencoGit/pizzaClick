@@ -53,6 +53,12 @@
 .pNascosto{
     display: none;
 }
+/*
+.not-clickable{
+    pointer-events:none;
+    cursor: default;
+}
+*/
 .marginLeft{
     margin-left: 5%;
     clear: both;

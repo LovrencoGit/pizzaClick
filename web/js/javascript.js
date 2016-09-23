@@ -291,10 +291,13 @@ function allMostra() {
     $("#divPizzeOrdine").hide();
 }
 function RichiestaAvvenutaConsegna(idOrdine) {
-    var conferma = confirm("Hai davvero ricevuto quest'ordine?");
+    var conferma = confirm("Hai davvero ricevuto quest'ordine? \nConfermando, sarà possibile valutare il nostro servizio");
     if (conferma === true) {
         window.location.href = "Dispatcher?src=desktop&cmd=avvenutaConsegna&idOrdine=" + idOrdine;
         document.getElementById("btnAnnullaOrdine").style.setProperty("display", "none");
+        var select =document.getElementById("rating" + idOrdine);
+        select.disabled = false;
+        //alert("La preghiamo di valutare il nostro servizio");
     }
 
 }

@@ -150,15 +150,21 @@ public class Ordine implements Serializable {
             } else {
                 ordiniToHTML += "<td class='padding'><button onclick='RichiestaAnnullaOrdine(" + item.getIdOrdine() + ")' id='btnAnnullaOrdine' class='hide'>Annulla</button></td>";
             }
+            
             if (item.isConsegnato()) {
                 ordiniToHTML += "<td class='padding'>Consegna avvenuta!</td>";
             } else {
                 ordiniToHTML += "<td class='padding'><button onclick='RichiestaAvvenutaConsegna(" + item.getIdOrdine() + ")' id='btnConsegnato'>Avvenuta consegna</button></td>";
             }
-            ordiniToHTML += "<td align='center' class='padding'>"
-                    + "<select id='rating" + item.getIdOrdine() + "' class='rating' onchange='RichiestaValutazione(" + item.getIdOrdine() + ")'>"
+            
+            ordiniToHTML += "<td align='center' class='padding'>";
+            if (item.isConsegnato()) {    
+                ordiniToHTML += "<select id='rating" + item.getIdOrdine() + "' class='rating' onchange='RichiestaValutazione(" + item.getIdOrdine() + ")'>";
+            }else{
+                ordiniToHTML += "<select disabled  id='rating" + item.getIdOrdine() + "' class='rating' onchange='RichiestaValutazione(" + item.getIdOrdine() + ")'>";
+            }
                     //+ "<option value=''></option>"
-                    + (score == 0 ? "<option value='0' selected='selected'>-</option>" : "<option value='0'>-</option>")
+            ordiniToHTML += (score == 0 ? "<option value='0' selected='selected'>-</option>" : "<option value='0'>-</option>")
                     + (score == 1 ? "<option value='1' selected='selected'>1</option>" : "<option value='1'>1</option>")
                     + (score == 2 ? "<option value='2' selected='selected'>2</option>" : "<option value='2'>2</option>")
                     + (score == 3 ? "<option value='3' selected='selected'>3</option>" : "<option value='3'>3</option>")
