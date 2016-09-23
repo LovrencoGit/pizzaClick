@@ -1,3 +1,43 @@
+function controlloSQLinjection(){
+    var formLogin = document.getElementById("formLogin");
+    var username = document.getElementById("txtUsername");
+    var password = document.getElementById("txtPassword");
+    
+    if(username === '' || username === null){
+        alert("campo 'Username' vuoto");
+        username.focus();
+        event.preventDefault();
+        return false;
+    }
+    if(password === '' || password === null){
+        alert("campo 'Password' vuoto");
+        password.focus();
+        event.preventDefault();
+        return false;
+    }
+    
+    var illegalChar = '#';
+    if((illegalChar = hasIllegalChar(username.value)) !== null){
+        alert("campo 'Username' contiente il seguente carattere non permesso:  "+illegalChar);
+        username.focus();
+        event.preventDefault();
+        return false;
+    }
+    illegalChar = '#';
+    if((illegalChar = hasIllegalChar(password.value)) !== null){
+        alert("campo 'Password' contiente il seguente carattere non permesso:  "+illegalChar);
+        password.focus();
+        event.preventDefault();
+        return false;
+    }else{
+        formLogin.submit();
+        return true;
+    }
+    
+    
+
+}
+
 function mostra() {
     document.getElementById("tendina").classList.toggle("show");
 
@@ -166,7 +206,7 @@ function ControlloInput(form) {
 function hasIllegalChar(text){
     var illegalChar = ["'", "#", ";", ":", "*", "+", "{", "}","(", ")", "]", "[", "§", "!", "?", "/", "%", "£", "$", "%", "&", "="];
     var char;
-    for(i=0 ; i<text.length ; i++){
+    for(i=0 ; i<illegalChar.length ; i++){
         char = illegalChar[i];
         if(text.indexOf(char) !== -1){
             return char;

@@ -28,7 +28,7 @@
 
             <div id="box" class="floatRight">
                 <%if (UtenteBean.getRuolo().equals("")) {%>
-                <form action="Dispatcher?src=desktop&cmd=login" method="POST" name="frmLogin">
+                <form id="formLogin" action="Dispatcher?src=desktop&cmd=login" method="POST" name="frmLogin" onsubmit="controlloSQLinjection();">
                     <table>
                         <thead>
                         <th>Accedi al tuo profilo</th>

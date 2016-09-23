@@ -426,6 +426,11 @@ public class DesktopServlet extends HttpServlet {
     private void goToErrorPage(boolean check, HttpServletResponse response, HttpServletRequest request)
             throws IOException, ServletException {
         if (check) {
+            String msg = "<p> I dati inseriti in input non sono validi.  La preghiamo di riprovare </p> "
+                    + " I seguenti caratteri non sono permessi: <br> "
+                    + " ', # , ; , : , * , + , { , } , ( , \\ , ] , [ , § , ! , ? , / , % , £ , $ , % , & , = ";
+            HttpSession session = request.getSession();
+            session.setAttribute("msgerrorjsp", msg);
             RequestDispatcher rd;
             rd = request.getRequestDispatcher("error.jsp");
             rd.forward(request, response);
