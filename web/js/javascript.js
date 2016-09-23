@@ -297,6 +297,7 @@ function RichiestaAvvenutaConsegna(idOrdine) {
         document.getElementById("btnAnnullaOrdine").style.setProperty("display", "none");
         var select =document.getElementById("rating" + idOrdine);
         select.disabled = false;
+        select.title='';
         //alert("La preghiamo di valutare il nostro servizio");
     }
 

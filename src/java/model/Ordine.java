@@ -161,7 +161,7 @@ public class Ordine implements Serializable {
             if (item.isConsegnato()) {    
                 ordiniToHTML += "<select id='rating" + item.getIdOrdine() + "' class='rating' onchange='RichiestaValutazione(" + item.getIdOrdine() + ")'>";
             }else{
-                ordiniToHTML += "<select disabled  id='rating" + item.getIdOrdine() + "' class='rating' onchange='RichiestaValutazione(" + item.getIdOrdine() + ")'>";
+                ordiniToHTML += "<select disabled title='ordine non consegnato, non è possibile valutarlo'  id='rating" + item.getIdOrdine() + "' class='rating' onchange='RichiestaValutazione(" + item.getIdOrdine() + ")'>";
             }
                     //+ "<option value=''></option>"
             ordiniToHTML += (score == 0 ? "<option value='0' selected='selected'>-</option>" : "<option value='0'>-</option>")
@@ -206,9 +206,11 @@ public class Ordine implements Serializable {
 
             ordiniToHTML += "<td align='center' class='padding'>";
             if(item.isAnnullato()){
-                ordiniToHTML +="<label> <i>annullato</i> </label>";
+                ordiniToHTML +="<label> <u>annullato</u> </label>";
+            }else if(!item.isConsegnato()){
+                ordiniToHTML +="<label> <em>non consegnato</em> </label>";
             }else{
-                ordiniToHTML +="<label> "+(score==0 ? "-":score+"/5 stelle")+" </label>";
+                ordiniToHTML +="<label><strong> "+(score==0 ? "-":score+"/5 stelle")+" </strong></label>";
             }
                     /*
                     + "<select id='rating" + item.getIdOrdine() + "' class='mostraRating' onchange='RichiestaValutazione(" + item.getIdOrdine() + ")'>"
