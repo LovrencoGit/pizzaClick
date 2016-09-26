@@ -40,7 +40,7 @@ public class Dispatcher extends HttpServlet {
 
         HttpSession session = request.getSession();
         String cmd = request.getParameter("cmd");
-        if (cmd == null) {//serve nel crud add, delete.... per far si che ci carichi il menu aggiornato
+        if (cmd == null) {//serve nel crud add, delete.... per far si che carichi il menu aggiornato
             session.setAttribute("elenco_pizze_user", elenco);
         } else {
             elenco = (ArrayList<Pizza>) DBManager.caricaMenu("User");

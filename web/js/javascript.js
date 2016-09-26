@@ -1,7 +1,20 @@
 function controlloSQLinjection(){
-    var formLogin = document.getElementById("formLogin");
-    var username = document.getElementById("txtUsername");
-    var password = document.getElementById("txtPassword");
+    var form;
+    var username;
+    var password;
+    //var form = document.getElementById("formLogin");
+    //var username = document.getElementById("txtUsername");
+    //var password = document.getElementById("txtPassword");
+    var formLoginPopup = document.getElementById("formLoginPopup");
+    if(formLoginPopup !== null){
+        username = document.getElementById("txtUsernamePopup");
+        password = document.getElementById("txtPasswordPopup");
+        form = formLoginPopup;
+    }else{
+        form = document.getElementById("formLogin");
+        username = document.getElementById("txtUsername");
+        password = document.getElementById("txtPassword");
+    }
     
     if(username === '' || username === null){
         alert("campo 'Username' vuoto");
@@ -30,7 +43,7 @@ function controlloSQLinjection(){
         event.preventDefault();
         return false;
     }else{
-        formLogin.submit();
+        form.submit();
         return true;
     }
     
@@ -108,11 +121,11 @@ function RichiestaAcquista(username, indirizzo) {
 
     var html = "";
     if (username === null || username === undefined || username === "") {
-        html += "<form action='Dispatcher?src=desktop&cmd=login' method='POST' name='frmLogin'>"
+        html += "<form id='formLoginPopup' action='Dispatcher?src=desktop&cmd=login' method='POST' name='frmLoginPopup' onsubmit='controlloSQLinjection();'>"
                 + "<div id='boxRiepilogoLogin'>"
                 + "<h1>&Egrave; necessario accedere al tuo profilo</h1><hr>"
-                + "<p><h3>Username:</h3> <input type='text' name='txtUsername' id='txtUsername' class='txtRiepilogo' value='' required/></p>"
-                + "<p><h3>Password:</h3> <input type='password' name='txtPassword' id='txtPassword' class='txtRiepilogo' value='' required/></p>"
+                + "<p><h3>Username:</h3> <input type='text' name='txtUsername' id='txtUsernamePopup' class='txtRiepilogo' value='' required/></p>"
+                + "<p><h3>Password:</h3> <input type='password' name='txtPassword' id='txtPasswordPopup' class='txtRiepilogo' value='' required/></p>"
                 + "<p><input id='btnAccedi' class='buttonRiepilogo' type='submit' value='Accedi' name='btnAccedi'/></p>"
                 + "</div>"
                 + "</form>";
